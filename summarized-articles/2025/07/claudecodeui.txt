@@ -1,0 +1,5 @@
+要点まとめ（300字以内）
+claudecodeui は Siteboon によるオープンソースのWeb & モバイル対応GUIで、Anthropic公式のClaude Code CLIのセッション・プロジェクトをリモートやローカルで視覚的に管理できます。React + Vite + Tailwind CSS + CodeMirrorを使用し、チャット、ターミナル、ファイルエクスプローラー、Git操作、セッション履歴に対応。Node.js / Express + WebSocket経由でCLIと連携し、デバイスを問わずClaude Codeを使いやすくします。GPL-3.0ライセンスで、スター数1.1k、フォーク140を突破、2025年7月12日に v1.3.0 リリースされています。
+
+感想（300字以内）
+CLI中心だったClaude Codeに対し、claudecodeui は非常に魅力的なUXを提供しており、非エンジニアやモバイル環境でも使いやすくする拡張として大きな価値があります。READMEや実際の使用者からも「This is THE BEST Web UI for USING Claude Code from ANYWHERE!」との声が上がっており、利便性やレビュー体験の改善にも期待できます。ただし、まだ成熟途上で開発が活発なため、安定性や機能拡張に伴う対応が今後の課題となるでしょう。
