@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ファイルマトリクス管理システム プロトタイプ</title>
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* カスタムグリッド：左にカテゴリ列、上に年度列 */
+    .matrix-grid {
+      display: grid;
+      grid-auto-rows: minmax(100px, auto);
+    }
+  </style>
+</head>
+<body class="h-screen flex bg-gray-50">
+  <!-- サイドバー：ドラッグ可能ファイルリスト -->
+  <aside class="w-1/6 p-4 bg-white border-r border-gray-200">
+    <h2 class="text-lg font-semibold mb-4">ファイル一覧</h2>
+    <div id="file-list" class="space-y-2">
+      <div draggable="true" data-file-name="report.pdf" class="file-item cursor-move p-2 bg-blue-100 rounded text-sm">report.pdf</div>
+      <div draggable="true" data-file-name="design.docx" class="file-item cursor-move p-2 bg-green-100 rounded text-sm">design.docx</div>
+      <div draggable="true" data-file-name="invoice.xlsx" class="file-item cursor-move p-2 bg-yellow-100 rounded text-sm">invoice.xlsx</div>
+    </div>
+  </aside>
+
+  <!-- メイン：年度×カテゴリ マトリクス -->
+  <main class="flex-1 overflow-auto p-4">
+    <div id="matrix-container" class="inline-block min-w-full"></div>
+  </main>
+
+  <script>
+    /********************
+     * 動的マトリクス生成
+     ********************/
+    const years = [2021, 2022, 2023, 2024, 2025];
+    const categories = ['契約書', '報告書', '請求書', 'メモ'];
+
+    const container = document.getElementById('matrix-container');
+    const grid = document.createElement('div');
+    grid.className = 'matrix-grid';
+    // 左端200px + 年度列×可変
+    grid.style.gridTemplateColumns = `200px repeat(${years.length}, minmax(120px, 1fr))`;
+
+    // 左上空白セル
+    grid.appendChild(document.createElement('div'));
+
+    // 年度ヘッダー
+    years.forEach(year => {
+      const th = document.createElement('div');
+      th.textContent = year;
+      th.className = 'sticky top-0 bg-white z-20 border border-gray-200 text-center font-medium';
+      grid.appendChild(th);
+    });
+
+    // カテゴリ行とセル
+    categories.forEach((cat, rIdx) => {
+      // カテゴリラベル
+      const label = document.createElement('div');
+      label.textContent = cat;
+      label.className = 'sticky left-0 bg-white z-10 border border-gray-200 font-medium p-2';
+      grid.appendChild(label);
+
+      years.forEach((y, cIdx) => {
+        const cell = document.createElement('div');
+        cell.className = 'cell border border-gray-200 p-2 flex flex-col min-h-[100px]';
+        cell.dataset.cellId = `${rIdx}-${cIdx}`;
+        grid.appendChild(cell);
+      });
+    });
+
+    container.appendChild(grid);
+
+    /********************
+     * ドラッグ＆ドロップ
+     ********************/
+    // ドラッグ開始
+    document.querySelectorAll('.file-item').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', item.dataset.fileName);
+      });
+    });
+
+    // セル側イベント
+    document.querySelectorAll('.cell').forEach(cell => {
+      cell.addEventListener('dragover', e => {
+        e.preventDefault();
+        cell.classList.add('bg-gray-100');
+      });
+      cell.addEventListener('dragleave', () => cell.classList.remove('bg-gray-100'));
+      cell.addEventListener('drop', e => {
+        e.preventDefault();
+        cell.classList.remove('bg-gray-100');
+        const fileName = e.dataTransfer.getData('text/plain');
+        if (!fileName) return;
+        const tag = document.createElement('div');
+        tag.className = 'text-xs bg-blue-200 px-2 py-1 rounded mb-1 truncate';
+        tag.textContent = fileName;
+        cell.appendChild(tag);
+      });
+    });
+  </script>
+</body>
+</html>
